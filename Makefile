@@ -1,7 +1,7 @@
 SRC=pybeep.c pybeep.h _pybeep.c
 
 .PHONY: all clean inplace
-all: build
+all: inplace
 
 pybeep.so: $(SRC)
 	python setup.py build_ext --inplace
