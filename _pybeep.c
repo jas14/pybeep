@@ -14,8 +14,8 @@ static PyMethodDef module_methods[] = {
 };
 
 PyMODINIT_FUNC
-init_pybeep(void)
+initpybeep(void)
 {
-    Py_InitModule("_pybeep", module_methods);
+    Py_InitModule("pybeep", module_methods);
 }
 

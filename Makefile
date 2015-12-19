@@ -1,8 +1,15 @@
-.PHONY: all clean
-all: _pybeep.so
+SRC=pybeep.c pybeep.h _pybeep.c
 
-_pybeep.so: pybeep.c pybeep.h _pybeep.c
+.PHONY: all clean inplace
+all: build
+
+pybeep.so: $(SRC)
 	python setup.py build_ext --inplace
 
+inplace: pybeep.so
+
+build: $(SRC)
+	python setup.py build_ext
+
 clean:
-	rm -f _pybeep.so
+	rm -rf pybeep.so build
