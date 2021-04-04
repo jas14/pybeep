@@ -28,6 +28,21 @@ void do_beep(int console_fd, float freq)
 PyObject *
 pybeep_beep(PyObject *self, PyObject *args)
 {
+    // PyObject *frequency = NULL; // Py_None
+    // PyObject *duration = NULL; // Py_None
+    // ^ causes a Segmentation fault at Py_INCREF, PyFloat_Check, or
+    //   PyFloat_AsDouble! Only use PyObject for "O" format in
+    //   PyArg_ParseTuple
+    //   (See <https://dfm.io/posts/python-c-extensions/>).
+
+    // See <https://docs.python.org/3/extending/extending.html>:
+    float frequency = DEFAULT_FREQ;
+    float duration = DEFAULT_LENGTH;
+    if (!PyArg_ParseTuple(args, "ff", &frequency, &duration)) {
+        PyErr_SetString(PyExc_ValueError, "expected beep(frequency, duration).");
+        return NULL;
+    }
+
     // open console
     int console_fd;
 
@@ -36,7 +51,7 @@ pybeep_beep(PyObject *self, PyObject *args)
     }
     if (console_fd == -1) {
         perror("open");
-        printf("hello\n");
+        printf("beep\n");
         putchar('\a');
         Py_RETURN_NONE;
     }
@@ -48,14 +63,17 @@ pybeep_beep(PyObject *self, PyObject *args)
         console_type = BEEP_TYPE_CONSOLE;
     }
 
+    printf("beep at %fHz for %fms\n", frequency, duration);
     // start beep
-    do_beep(console_fd, DEFAULT_FREQ);
+    do_beep(console_fd, frequency);
 
     // stop beep
-    usleep(1000*DEFAULT_LENGTH);
+    usleep(1000*duration);
     do_beep(console_fd, 0);
 
     // close console
     close(console_fd);
+    // Py_DECREF(frequency);
+    // Py_DECREF(duration);
     Py_RETURN_NONE;
 }
