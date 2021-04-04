@@ -12,4 +12,4 @@ build: $(SRC)
 	python setup.py build_ext
 
 clean:
-	rm -rf pybeep.so build
+	rm -rf *.so build
