@@ -38,8 +38,19 @@ pybeep_beep(PyObject *self, PyObject *args)
     // See <https://docs.python.org/3/extending/extending.html>:
     float frequency = DEFAULT_FREQ;
     float duration = DEFAULT_LENGTH;
-    if (!PyArg_ParseTuple(args, "ff", &frequency, &duration)) {
-        PyErr_SetString(PyExc_ValueError, "expected beep(frequency, duration).");
+    int argc = PyObject_Length(args);
+    if (argc == 1) {
+        if (!PyArg_ParseTuple(args, "f", &frequency)) {
+            return NULL;
+        }
+    }
+    else if (argc == 2) {
+        if (!PyArg_ParseTuple(args, "ff", &frequency, &duration)) {
+            return NULL;
+        }
+    }
+    else if (argc > 2) {
+        PyErr_SetString(PyExc_TypeError, "expected beep(frequency) or beep(frequency, duration).");
         return NULL;
     }
 
@@ -51,7 +62,7 @@ pybeep_beep(PyObject *self, PyObject *args)
     }
     if (console_fd == -1) {
         perror("open");
-        printf("beep\n");
+        // printf("beep\n");
         putchar('\a');
         Py_RETURN_NONE;
     }
@@ -63,7 +74,7 @@ pybeep_beep(PyObject *self, PyObject *args)
         console_type = BEEP_TYPE_CONSOLE;
     }
 
-    printf("beep at %fHz for %fms\n", frequency, duration);
+    // printf("beep at %fHz for %fms\n", frequency, duration);
     // start beep
     do_beep(console_fd, frequency);
 
@@ -73,7 +84,5 @@ pybeep_beep(PyObject *self, PyObject *args)
 
     // close console
     close(console_fd);
-    // Py_DECREF(frequency);
-    // Py_DECREF(duration);
     Py_RETURN_NONE;
 }
