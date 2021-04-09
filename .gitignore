@@ -1,2 +1,2 @@
 build/
-pybeep.so
+*.so
