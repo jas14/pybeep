@@ -38,20 +38,8 @@ pybeep_beep(PyObject *self, PyObject *args)
     // See <https://docs.python.org/3/extending/extending.html>:
     float frequency = DEFAULT_FREQ;
     float duration = DEFAULT_LENGTH;
-    int argc = PyObject_Length(args);
-    if (argc == 1) {
-        if (!PyArg_ParseTuple(args, "f", &frequency)) {
-            return NULL;
-        }
-    }
-    else if (argc == 2) {
-        if (!PyArg_ParseTuple(args, "ff", &frequency, &duration)) {
-            return NULL;
-        }
-    }
-    else if (argc > 2) {
-        PyErr_SetString(PyExc_TypeError, "expected beep(frequency) or beep(frequency, duration).");
-        return NULL;
+     if (!PyArg_ParseTuple(args, "|ff", &frequency, &duration)) {
+          return NULL;
     }
 
     // open console
