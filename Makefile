@@ -4,12 +4,12 @@ SRC=pybeep.c pybeep.h _pybeep.c
 all: inplace
 
 pybeep.so: $(SRC)
-	python setup.py build_ext --inplace
+	python3 setup.py build_ext --inplace
 
 inplace: pybeep.so
 
 build: $(SRC)
-	python setup.py build_ext
+	python3 setup.py build_ext
 
 clean:
 	rm -rf *.so build
